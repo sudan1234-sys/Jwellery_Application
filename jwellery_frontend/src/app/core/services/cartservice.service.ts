@@ -1,7 +1,9 @@
+
 // src/app/core/services/cartservice.service.ts
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment'
 
 export interface CartItemDTO {
   productId: number;
@@ -26,7 +28,6 @@ export interface CartDTO {
 export class CartserviceService {
   private http = inject(HttpClient);
   // Ensure this matches your Spring Boot base path
-  private baseUrl = 'http://localhost:8080/api/users';
 
   constructor() { }
 
@@ -37,19 +38,19 @@ export class CartserviceService {
       .set('quantity', quantity.toString());
 
     // POST /api/users/{userId}/cart/items?productId=...&quantity=...
-    return this.http.post<CartDTO>(`${this.baseUrl}/${userId}/cart/items`, null, { params });
+    return this.http.post<CartDTO>(`${environment.apiUrl}/api/users/${userId}/cart/items`, null, { params });
   }
 
   // Remove product from cart
   removeFromCart(userId: number, productId: number): Observable<CartDTO> {
     // DELETE /api/users/{userId}/cart/items/{productId}
-    return this.http.delete<CartDTO>(`${this.baseUrl}/${userId}/cart/items/${productId}`);
+    return this.http.delete<CartDTO>(`${environment.apiUrl}/api/users/${userId}/cart/items/${productId}`);
   }
 
   // Get cart for a user
   getCart(userId: number): Observable<CartDTO> {
     // GET /api/users/{userId}/cart
-    return this.http.get<CartDTO>(`${this.baseUrl}/${userId}/cart`);
+    return this.http.get<CartDTO>(`${environment.apiUrl}/api/users/${userId}/cart`);
   }
 
   // Update quantity to an explicit value (PUT). Backend: updateProductQuantity
@@ -59,6 +60,6 @@ export class CartserviceService {
       .set('quantity', quantity.toString());
 
     // PUT /api/users/{userId}/cart/items?productId=...&quantity=...
-    return this.http.put<CartDTO>(`${this.baseUrl}/${userId}/cart/items`, null, { params });
+    return this.http.put<CartDTO>(`${environment.apiUrl}/api/users/${userId}/cart/items`, null, { params });
   }
 }
