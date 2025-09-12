@@ -1,0 +1,188 @@
+<div class="relative bg-gray-50">
+  <!-- Background gradient -->
+  <div class="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-rose-50 via-white to-amber-50"></div>
+
+  <div class="antialiased max-w-7xl mx-auto space-y-20 px-4 sm:px-6 lg:px-8">
+
+    <!-- Hero -->
+    <section
+      class="mt-10 text-center py-20 rounded-2xl bg-gradient-to-r from-rose-50 via-pink-50 to-amber-50 shadow-sm border border-pink-100">
+      <h1 class="text-3xl md:text-4xl font-serif font-extrabold text-gray-800 tracking-tight">
+        Timeless Jewellery, Redefined
+      </h1>
+      <p class="mt-4 text-base md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+        Handcrafted pieces that blend elegance, tradition, and modern artistry.
+      </p>
+      <a routerLink="/products"
+         class="mt-8 inline-block px-8 py-3 bg-gradient-to-r from-rose-500 to-pink-600 text-white rounded-full shadow hover:from-rose-600 hover:to-pink-700 transition-transform hover:-translate-y-0.5 font-medium text-sm md:text-base">
+        Explore Collection
+      </a>
+    </section>
+
+    <!-- Categories -->
+    <section>
+      <h2 class="text-center text-2xl font-serif font-semibold text-gray-800 mb-10">
+        Shop by Category
+      </h2>
+
+      <!-- Loader -->
+      <div *ngIf="loadingCategories(); else categoriesBlock" class="flex flex-wrap justify-center gap-8">
+        <div *ngFor="let i of [1,2,3,4]" class="w-24 h-24 rounded-full bg-gray-200 animate-pulse"></div>
+      </div>
+
+      <!-- Actual Categories -->
+      <ng-template #categoriesBlock>
+        <div class="flex flex-wrap justify-center gap-8">
+          <ng-container *ngFor="let cat of categories()">
+            <a [href]="'#cat-' + cat.name" class="flex flex-col items-center text-center group scroll-smooth">
+              <div
+                class="w-24 h-24 rounded-full bg-gradient-to-br from-rose-100 to-pink-50 border border-gray-200 shadow-sm flex items-center justify-center transition-all group-hover:shadow-md group-hover:-translate-y-1">
+                <span class="text-gray-700 font-medium text-sm">
+                  {{ cat.name }}
+                </span>
+              </div>
+            </a>
+          </ng-container>
+        </div>
+      </ng-template>
+    </section>
+
+    <!-- Featured Products -->
+    <section id="shop">
+      <h2 class="text-center text-2xl font-serif font-semibold text-gray-800 mb-10">
+        Featured Products
+      </h2>
+
+      <!-- Loader -->
+      <div *ngIf="loadingFeatured(); else featuredBlock" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div *ngFor="let i of [1,2,3]" class="bg-white rounded-xl border p-4 animate-pulse">
+          <div class="h-48 w-full bg-gray-200 rounded"></div>
+          <div class="mt-4 h-4 w-3/4 bg-gray-200 rounded"></div>
+          <div class="mt-2 h-4 w-1/2 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+
+      <!-- Actual Featured Products -->
+      <ng-template #featuredBlock>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <ng-container *ngFor="let product of featuredProducts()">
+            <div
+              class="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 flex flex-col animate-fadeIn">
+              <div class="relative overflow-hidden">
+                <img *ngIf="product?.imageUrls?.length; else noImg"
+                     [ngSrc]="product.imageUrls[0]"
+                     [alt]="product.name"
+                     width="600" height="450"
+                     class="w-full h-48 object-cover transition-transform duration-300 hover:scale-105" />
+                <ng-template #noImg>
+                  <div class="h-48 w-full bg-gray-100 grid place-items-center text-gray-400 text-sm">
+                    No Image
+                  </div>
+                </ng-template>
+              </div>
+              <div class="p-4 flex flex-col flex-1">
+                <h3 class="text-base md:text-lg font-semibold text-gray-800 line-clamp-2">
+                  {{ product.name }}
+                </h3>
+                <p class="mt-1 text-rose-600 font-semibold text-sm md:text-base">
+                  ₹{{ product.price }}
+                </p>
+                <div class="mt-auto flex gap-2">
+                  <a [routerLink]="['/product', product.id]"
+                     class="flex-1 text-center px-4 py-2 bg-rose-500 text-white rounded-full text-xs md:text-sm font-medium hover:bg-rose-600 transition">
+                    View Details
+                  </a>
+                  <button (click)="addToCart(product)"
+                          class="flex-1 text-center px-4 py-2 bg-gradient-to-r from-pink-600 to-rose-500 text-white rounded-full text-xs md:text-sm font-medium hover:from-pink-700 hover:to-rose-600 transition">
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </ng-template>
+    </section>
+
+    <!-- Products by Category -->
+    <section>
+      <h2 class="text-center text-2xl font-serif font-semibold text-gray-800 mb-12">
+        Explore Our Collections
+      </h2>
+
+      <!-- Loader -->
+      <div *ngIf="loadingByCategory(); else loadedCategories" class="space-y-16">
+        <div *ngFor="let i of [1,2,3]" class="min-h-96">
+          <div class="flex items-center justify-between mb-6">
+            <div class="h-6 w-48 bg-gray-200 rounded animate-pulse"></div>
+            <div class="h-5 w-24 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+            <div *ngFor="let j of [1,2,3,4,5]" class="bg-white rounded-xl border p-4 animate-pulse">
+              <div class="h-36 w-full bg-gray-200 rounded"></div>
+              <div class="mt-3 h-4 w-3/4 bg-gray-200 rounded"></div>
+              <div class="mt-2 h-4 w-1/2 bg-gray-200 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loaded -->
+      <ng-template #loadedCategories>
+        <div *ngIf="productsByCategory().length; else emptyState" class="space-y-16">
+          <ng-container *ngFor="let block of productsByCategory()">
+            <div>
+              <div [id]="'cat-' + block.category"
+                   class="flex items-center justify-between mb-6 scroll-mt-20">
+                <h3 class="text-lg md:text-xl font-semibold text-gray-800">{{ block.category }}</h3>
+                <a [routerLink]="['/products']"
+                   [queryParams]="{ category: block.category }"
+                   class="text-sm text-rose-600 hover:text-rose-700 font-medium">
+                  View All →
+                </a>
+              </div>
+
+              <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+                <ng-container *ngFor="let product of block.products">
+                  <a [routerLink]="['/product', product.id]" class="block">
+                    <div
+                      class="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 flex flex-col animate-fadeIn">
+                      <div class="relative overflow-hidden">
+                        <img *ngIf="product?.imageUrls?.length; else noCatImg"
+                             [ngSrc]="product.imageUrls[0]"
+                             [alt]="product.name"
+                             width="400" height="300"
+                             class="w-full h-36 object-cover transition-transform duration-300 hover:scale-105" />
+                        <ng-template #noCatImg>
+                          <div class="h-36 w-full bg-gray-100 grid place-items-center text-gray-400 text-sm">
+                            No Image
+                          </div>
+                        </ng-template>
+                      </div>
+                      <div class="p-3 flex flex-col flex-1">
+                        <h4 class="text-sm md:text-base font-semibold text-gray-800 line-clamp-1">
+                          {{ product.name }}
+                        </h4>
+                        <p class="mt-1 text-rose-600 font-semibold text-xs md:text-sm">
+                          ₹{{ product.price }}
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </ng-container>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+
+        <!-- Empty state -->
+        <ng-template #emptyState>
+          <div class="py-12 text-center text-gray-500">
+            No collections available right now.
+          </div>
+        </ng-template>
+      </ng-template>
+    </section>
+
+  </div>
+</div>

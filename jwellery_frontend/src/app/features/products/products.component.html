@@ -1,0 +1,177 @@
+<!-- 🔍 Search + Filters Section -->
+<div class="mb-8 bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+    
+    <!-- Search Bar -->
+    <div class="lg:col-span-2">
+      <label for="search" class="text-sm font-medium text-slate-700 mb-1 block">Search</label>
+      <div class="relative">
+        <input
+          id="search"
+          type="text"
+          placeholder="Search products..."
+          [formControl]="searchControl"
+          class="w-full px-4 py-2 pl-10 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 transition"
+        />
+
+        <!-- Search Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" 
+             class="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" 
+             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18.5a7.5 7.5 0 006.15-3.85z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Category Filter -->
+    <div>
+      <label for="categoryFilter" class="text-sm font-medium text-slate-700 mb-1">Category</label>
+      <select
+        id="categoryFilter"
+        [(ngModel)]="categoryFilterValue"
+        (change)="applyFilters()"
+        class="w-full px-4 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 transition"
+      >
+        <option [ngValue]="null">All Categories</option>
+        <option *ngFor="let cat of categories()" [ngValue]="cat.id">{{ cat.name }}</option>
+      </select>
+    </div>
+
+    <!-- Min Price -->
+    <div>
+      <label for="minPrice" class="text-sm font-medium text-slate-700 mb-1">Min Price</label>
+      <input
+        id="minPrice"
+        type="number"
+        placeholder="₹0"
+        [(ngModel)]="minPriceFilterValue"
+        (change)="applyFilters()"
+        class="w-full px-4 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 transition"
+      />
+    </div>
+
+    <!-- Max Price -->
+    <div>
+      <label for="maxPrice" class="text-sm font-medium text-slate-700 mb-1">Max Price</label>
+      <input
+        id="maxPrice"
+        type="number"
+        placeholder="₹0"
+        [(ngModel)]="maxPriceFilterValue"
+        (change)="applyFilters()"
+        class="w-full px-4 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 transition"
+      />
+    </div>
+  </div>
+
+  <!-- Clear Filters -->
+  <div class="mt-4 text-right">
+    <button
+      (click)="clearFilters()"
+      class="px-4 py-2 bg-pink-50 text-pink-600 font-medium rounded-md hover:bg-pink-100 transition"
+    >
+      Clear All
+    </button>
+  </div>
+</div>
+
+<div class="p-6">
+  <!-- Loading -->
+  <div *ngIf="loading()" class="text-center py-20 text-slate-500">
+    Loading products...
+  </div>
+
+  <!-- Grid -->
+  <div *ngIf="!loading()" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div *ngFor="let product of product()" class="group">
+      <!-- clickable card wrapper -->
+      <a
+        [routerLink]="['/product', product.id]"
+        class="block bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 duration-200 overflow-hidden"
+      >
+        <!-- image area -->
+        <div class="relative w-full h-56 bg-slate-50 overflow-hidden rounded-t-xl">
+          <!-- main image -->
+          <img
+            *ngIf="product.imageUrls?.length; else noImage"
+            [ngSrc]="product.imageUrls[0]"
+            width="800"
+            height="520"
+            alt="{{ product.name }}"
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            decoding="async"
+          />
+          <!-- secondary image fades in on hover if exists -->
+          <img
+            *ngIf="product.imageUrls?.length && product.imageUrls.length > 1"
+            [ngSrc]="product.imageUrls[1]"
+            width="800"
+            height="520"
+            alt="{{ product.name }} alternate"
+            class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-400 group-hover:opacity-100"
+            decoding="async"
+          />
+
+          <!-- no image fallback -->
+          <ng-template #noImage>
+            <div class="w-full h-full flex items-center justify-center text-slate-400">
+              No Image
+            </div>
+          </ng-template>
+        </div>
+
+        <!-- info area -->
+        <div class="p-4 flex flex-col gap-3">
+          <div>
+            <h3 class="text-base font-semibold text-slate-900">
+              {{ product.name }}
+            </h3>
+            <p class="text-sm text-slate-600 mt-1 line-clamp-2">
+              {{ product.description }}
+            </p>
+          </div>
+
+          <div class="mt-2 flex items-center justify-between">
+            <div class="flex items-baseline gap-2">
+              <!-- soft pink accent only for price -->
+              <span class="text-pink-600 font-semibold text-lg">₹ {{ product.price }}</span>
+              <span class="text-sm text-slate-500"> · {{ product.categoryName }}</span>
+            </div>
+
+            <!-- Add to cart (stop propagation so anchor isn't triggered) -->
+            <button
+              
+              class="px-3 py-1 rounded-md bg-pink-500 hover:bg-pink-600 text-white text-sm transition-colors duration-200"
+            >
+              Add to cart
+            </button>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- pagination -->
+  <div *ngIf="!loading()" class="flex items-center justify-center gap-3 mt-8">
+    <button
+      (click)="prevPage()"
+      [disabled]="currentPage() === 0"
+      class="px-4 py-2 rounded-md bg-white border border-slate-100 text-slate-700 disabled:opacity-50"
+    >
+      Previous
+    </button>
+
+    <div class="text-slate-700">
+      Page {{ (paginatedResponse()?.number ?? 0) + 1 }} of {{ paginatedResponse()?.totalPages ?? 1 }}
+    </div>
+
+    <button
+      (click)="nextPage()"
+      [disabled]="currentPage() + 1 >= (paginatedResponse()?.totalPages ?? 0)"
+      class="px-4 py-2 rounded-md bg-pink-500 text-white hover:bg-pink-600 disabled:opacity-50"
+    >
+      Next
+    </button>
+  </div>
+</div>

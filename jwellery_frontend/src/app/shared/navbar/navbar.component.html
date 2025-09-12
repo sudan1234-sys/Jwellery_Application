@@ -1,0 +1,29 @@
+<nav class="navbar">
+  <div class="nav-container">
+    <!-- Logo -->
+    <div class="logo">
+      <a routerLink="/">✨ JewelAura</a>
+    </div>
+
+    <!-- Desktop Links -->
+    <ul class="nav-links">
+      <li><a routerLink="/">Home</a></li>
+      <li><a routerLink="/products">Products</a></li>
+      <li><a routerLink="/categories">Categories</a></li>
+      <li><a routerLink="/about">About</a></li>
+      <li><a routerLink="/mycart">MyCart</a></li>
+    </ul>
+
+    <!-- Hamburger (mobile only) -->
+    <button class="menu-toggle" (click)="toggleMenu()">☰</button>
+  </div>
+
+  <!-- Mobile Dropdown -->
+  <ul class="mobile-menu" *ngIf="menuOpen()">
+    <li><a routerLink="/" (click)="toggleMenu()">Home</a></li>
+    <li><a routerLink="/products" (click)="toggleMenu()">Products</a></li>
+    <li><a routerLink="/categories" (click)="toggleMenu()">Categories</a></li>
+    <li><a routerLink="/about" (click)="toggleMenu()">About</a></li>
+    <li><a routerLink="/mycart" (click)="toggleMenu()">MyCart</a></li>
+  </ul>
+</nav>
