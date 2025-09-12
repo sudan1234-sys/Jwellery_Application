@@ -136,7 +136,7 @@
                    class="flex items-center justify-between mb-6 scroll-mt-20">
                 <h3 class="text-lg md:text-xl font-semibold text-gray-800">{{ block.category }}</h3>
                 <a [routerLink]="['/products']"
-                   [queryParams]="{ category: block.category }"
+                   [queryParams]="{ category: myMap.get(block.category) }"
                    class="text-sm text-rose-600 hover:text-rose-700 font-medium">
                   View All →
                 </a>

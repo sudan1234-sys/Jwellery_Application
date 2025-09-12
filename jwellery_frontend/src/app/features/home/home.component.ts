@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit {
   private readonly productService = inject(ProductService);
   private readonly categoryService = inject(CategoryService);
   private readonly cartService = inject(CartserviceService);
-
+  myMap = new Map<string, number>();
   // data signals
   readonly featuredProducts = signal<ProductDTO[]>([]);
   readonly categories = signal<Category[]>([]);
@@ -42,6 +42,9 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadHomeData();
+    this.myMap.set('Rings', 1);
+    this.myMap.set('Necklaces', 2);
+    this.myMap.set('Earrings', 3);
   }
 
   private loadHomeData(): void {
@@ -62,7 +65,11 @@ export class HomeComponent implements OnInit {
 
     // Categories
     this.categoryService.getAllCategories().subscribe({
-      next: (cats) => this.categories.set(cats),
+      next: (cats) => {this.categories.set(cats)
+        for(const cat of cats){
+          this.myMap.set(cat.name, cat.id);
+        }
+      },
       error: (err) => {
         console.error('Error loading categories', err);
         this.categories.set([]);
