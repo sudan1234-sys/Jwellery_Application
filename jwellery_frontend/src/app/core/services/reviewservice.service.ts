@@ -12,6 +12,14 @@ import { environment } from '../../../environments/environment';
     params: { productId: productId.toString() } // must be string
   });
 }
+addReview(review: any) {
+  return this.http.post<string>(
+    `${environment.apiUrl}/saveReviews`,
+    review,
+    { responseType: 'text' as 'json' } // Type assertion needed
+  );
+}
+
 
 
  }

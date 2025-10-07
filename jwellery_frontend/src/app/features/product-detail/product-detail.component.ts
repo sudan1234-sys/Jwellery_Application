@@ -5,17 +5,18 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink , Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgOptimizedImage } from '@angular/common';
 import { ProductService } from '../../core/services/product.service.ts.service';
 import { ProductDTO } from '../../core/models/product.dto';
 import { reviewDto } from '../../core/models/reviewDto';
 import { ReviewserviceService } from '../../core/services/reviewservice.service';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-product-detail',
-  imports: [NgOptimizedImage, CommonModule, RouterLink],
+  imports: [NgOptimizedImage, CommonModule, RouterLink, ReactiveFormsModule],
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.scss']
 })
@@ -29,8 +30,11 @@ export class ProductDetailComponent implements OnInit {
   readonly selectedImage = signal<string | null>(null);
   readonly loadingProduct = signal(false);
   readonly loadingReviews = signal(false);
+  reviewForm: FormGroup = new FormGroup({});
 
+  constructor(private readonly router: Router) {}
   ngOnInit(): void {
+    
     const productId = Number(this.route.snapshot.paramMap.get('id'));
     if (!productId) {
       console.error('Invalid product ID');
@@ -77,5 +81,8 @@ export class ProductDetailComponent implements OnInit {
       console.log('Add to cart', this.product()?.id);
       // Later connect with CartService
     }
+  }
+  navigateToRate(){
+    this.router.navigate(['rate-product'], { queryParams: { productId: this.product()?.id } });
   }
 }
