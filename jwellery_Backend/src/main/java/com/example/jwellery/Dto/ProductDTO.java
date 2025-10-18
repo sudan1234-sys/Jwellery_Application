@@ -8,10 +8,30 @@ import java.util.List;
 public class ProductDTO {
     private Long id;
     private String name;
+    private double averageRating;
+    private int reviewCount;
 
-    public ProductDTO(Long id, String name, Double price, String description, long stock, String categoryName, List<String> imageUrls) {
+    public double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(double averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public int getReviewCount() {
+        return reviewCount;
+    }
+
+    public void setReviewCount(int reviewCount) {
+        this.reviewCount = reviewCount;
+    }
+
+    public ProductDTO(Long id, String name, double averageRating, int reviewCount, Double price, String description, long stock, String categoryName, List<String> imageUrls) {
         this.id = id;
         this.name = name;
+        this.averageRating = averageRating;
+        this.reviewCount = reviewCount;
         this.price = price;
         this.description = description;
         this.stock = stock;

@@ -66,6 +66,8 @@ public class ProductService {
                 .map(p -> new ProductDTO(
                         p.getId(),
                         p.getName(),
+                        p.getAverageRating(),
+                        p.getRatingCount(),
                         p.getPrice(),
                         p.getDescription(),
                         p.getStock(),
@@ -86,6 +88,8 @@ public class ProductService {
         return new ProductDTO(
                 product.getId(),
                 product.getName(),
+                product.getAverageRating(),
+                product.getRatingCount(),
                 product.getPrice(),
                 product.getDescription(),
                 product.getStock(),
@@ -175,6 +179,8 @@ public class ProductService {
                 .map(p -> new ProductDTO(
                         p.getId(),
                         p.getName(),
+                        p.getAverageRating(),
+                        p.getRatingCount(),
                         p.getPrice(),
                         p.getDescription(),
                         p.getStock(),

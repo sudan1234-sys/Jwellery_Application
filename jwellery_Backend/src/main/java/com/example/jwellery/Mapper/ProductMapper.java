@@ -51,6 +51,8 @@ public class ProductMapper {
         return new ProductDTO(
                 product.getId(),
                 product.getName(),
+                product.getAverageRating(),
+                product.getRatingCount(),
                 product.getPrice(),
                 product.getDescription(),
                 product.getStock(),

@@ -7,13 +7,20 @@ import lombok.*;
 @Data
 @Table(name = "categories")
 public class Category {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    public String catImage;
+    @Column(nullable = false, unique = true)
+    private String name; // e.g. Rings, Necklaces, Earrings
     public Category() {
     }
 
-    public Category(Long id, String name) {
+
+    public Category(Long id, String name, String catImage) {
         this.id = id;
         this.name = name;
+        this.catImage = catImage;
     }
 
     public Long getId() {
@@ -32,10 +39,14 @@ public class Category {
         this.name = name;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public String getCatImage() {
+        return catImage;
+    }
 
-    @Column(nullable = false, unique = true)
-    private String name; // e.g. Rings, Necklaces, Earrings
+    public void setCatImage(String catImage) {
+        this.catImage = catImage;
+    }
+
+
+
 }

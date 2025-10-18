@@ -9,8 +9,16 @@ public class Reviews {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private int rating;
     private String review;
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
 
     public Long getId() {
         return id;
@@ -40,11 +48,12 @@ public class Reviews {
         return product;
     }
 
-    public Reviews(Long id, String review, User user, Product product) {
+    public Reviews(Long id, String review, User user, Product product , int rating) {
         this.id = id;
         this.review = review;
         this.user = user;
         this.product = product;
+        this.rating=rating;
     }
 
     public Reviews() {

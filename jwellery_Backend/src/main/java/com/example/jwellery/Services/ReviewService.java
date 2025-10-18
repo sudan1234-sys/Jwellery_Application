@@ -24,7 +24,7 @@ public class ReviewService {
 
         // Map Reviews → ReviewDTO
         return reviews.stream()
-                .map(r -> new ReviewDto(r.getReview(), r.getUser().getName()))
+                .map(r -> new ReviewDto(r.getReview(), r.getUser().getName(),r.getRating()))
                 .toList(); // or .collect(Collectors.toList()) for older Java
     }
 

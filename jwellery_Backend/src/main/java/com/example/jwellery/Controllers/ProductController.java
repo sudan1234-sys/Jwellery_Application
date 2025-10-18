@@ -93,16 +93,21 @@ public class ProductController {
                 .map(product -> new ProductDTO(
                         product.getId(),
                         product.getName(),
-                        product.getPrice(),
-                        product.getDescription(),
-                        product.getStock(),
-                        product.getCategory().getName(),
-                        product.getImages().stream().map(Product_Image::getImageUrl).toList()
+                        product.getAverageRating(),       // double
+                        product.getRatingCount(),        // int
+                        product.getPrice(),              // Double
+                        product.getDescription(),        // String
+                        product.getStock(),              // long
+                        product.getCategory().getName(), // String
+                        product.getImages().stream()
+                                .map(Product_Image::getImageUrl)
+                                .toList()                  // List<String>
                 ))
                 .toList();
 
         return ResponseEntity.ok(dtos);
     }
+
     @GetMapping("/getProductbycategory")
     public ResponseEntity<List<Map<String, Object>>> getCategoryProducts() {
         Map<Category, List<Product>> rawResult = productService.getCategoryProducts();

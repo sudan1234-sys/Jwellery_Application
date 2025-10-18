@@ -46,6 +46,22 @@ public class Product {
     @Column(nullable = false)
     private boolean featured = false;  // default false
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Reviews> reviews = new ArrayList<>();
+    @Transient
+    public Double getAverageRating() {
+        if (reviews == null || reviews.isEmpty()) return 0.0;
+        return reviews.stream()
+                .mapToInt(Reviews::getRating)
+                .average()
+                .orElse(0.0);
+    }
+    @Transient
+    public int getRatingCount() {
+        return (reviews != null) ? reviews.size() : 0;
+    }
+
+
     public Long getId() {
         return id;
     }
