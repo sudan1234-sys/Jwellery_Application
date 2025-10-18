@@ -5,6 +5,10 @@ import {
   signal,
   computed,
   OnInit,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  OnDestroy,
 } from '@angular/core';
 import { CategoryProducts, ProductService } from '../../core/services/product.service.ts.service';
 import { CategoryService } from '../../core/services/category.service.ts.service';
@@ -22,23 +26,27 @@ import { CartserviceService } from '../../core/services/cartservice.service';
   styleUrls: ['./home.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly productService = inject(ProductService);
   private readonly categoryService = inject(CategoryService);
   private readonly cartService = inject(CartserviceService);
+
+  // Signals
   myMap = new Map<string, number>();
-  // data signals
   readonly featuredProducts = signal<ProductDTO[]>([]);
   readonly categories = signal<Category[]>([]);
   readonly productsByCategory = signal<CategoryProducts[]>([]);
-
-  // per-section loading signals (improves UX: show skeletons per section)
   readonly loadingFeatured = signal(true);
   readonly loadingCategories = signal(true);
   readonly loadingByCategory = signal(true);
 
-  // derived
   readonly hasProducts = computed(() => this.featuredProducts().length > 0);
+
+  // --- Carousel ---
+  ads = ['Ad 1', 'Ad 2', 'Ad 3', 'Ad 4']; // Dummy ads
+  @ViewChild('carouselContainer', { static: true }) carouselContainer!: ElementRef<HTMLDivElement>;
+  private currentIndex = 0;
+  private intervalId: any;
 
   ngOnInit(): void {
     this.loadHomeData();
@@ -47,8 +55,18 @@ export class HomeComponent implements OnInit {
     this.myMap.set('Earrings', 3);
   }
 
+  ngAfterViewInit(): void {
+    // Ensure container exists before starting
+    if (this.carouselContainer) {
+      this.startAutoScroll();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.stopAutoScroll();
+  }
+
   private loadHomeData(): void {
-    // set all loaders true at start
     this.loadingFeatured.set(true);
     this.loadingCategories.set(true);
     this.loadingByCategory.set(true);
@@ -65,8 +83,9 @@ export class HomeComponent implements OnInit {
 
     // Categories
     this.categoryService.getAllCategories().subscribe({
-      next: (cats) => {this.categories.set(cats)
-        for(const cat of cats){
+      next: (cats) => {
+        this.categories.set(cats);
+        for (const cat of cats) {
           this.myMap.set(cat.name, cat.id);
         }
       },
@@ -77,7 +96,7 @@ export class HomeComponent implements OnInit {
       complete: () => this.loadingCategories.set(false),
     });
 
-    // Products by category (blocks)
+    // Products by category
     this.productService.getProductsByCategory().subscribe({
       next: (blocks) => this.productsByCategory.set(blocks),
       error: (err) => {
@@ -89,17 +108,37 @@ export class HomeComponent implements OnInit {
   }
 
   addToCart(product: ProductDTO): void {
-    // userId hardcoded for now (replace with actual logged-in user id later)
-    const userId = 1;
+    const userId = 1; // Replace with actual user
     this.cartService.addToCart(userId, product.id, 1).subscribe({
-      next: (response) => {
-        console.log('Product added to cart successfully:', response);
-        // Could show toast/snackbar here
-      },
-      error: (err) => {
-        console.error('Error adding product to cart:', err);
-        // Show error UI if desired
-      }
+      next: (res) => console.log('Added to cart:', res),
+      error: (err) => console.error('Error adding to cart:', err),
     });
+  }
+
+  // --- Carousel Methods ---
+  startAutoScroll() {
+    this.stopAutoScroll(); // clear any existing interval
+    this.intervalId = setInterval(() => this.nextSlide(), 3000);
+  }
+
+  stopAutoScroll() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+
+  nextSlide() {
+    if (!this.carouselContainer) return;
+    this.currentIndex = (this.currentIndex + 1) % this.ads.length;
+    this.carouselContainer.nativeElement.style.transform = `translateX(-${this.currentIndex * 100}%)`;
+  }
+
+  onMouseEnter() {
+    this.stopAutoScroll();
+  }
+
+  onMouseLeave() {
+    this.startAutoScroll();
   }
 }

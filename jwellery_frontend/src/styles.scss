@@ -13,3 +13,10 @@ html {
 body {
   min-height: 100vh;
 }
+:root {
+  --font-weight-extrabold: 800;
+}
+
+.font-extrabold {
+  font-weight: 800 !important;
+}

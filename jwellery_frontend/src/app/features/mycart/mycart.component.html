@@ -1,62 +1,81 @@
-<div class="max-w-5xl mx-auto p-6">
-  <h1 class="text-3xl font-semibold text-gray-900 mb-6">Shopping Cart</h1>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+ 
 
-  <!-- loading -->
-  <div *ngIf="loading" class="py-12 text-center text-gray-500">Loading your cart…</div>
+  <!-- Loading -->
+  <div *ngIf="loading" class="py-20 text-center text-gray-500">
+    Loading your cart…
+  </div>
 
-  <!-- cart items -->
-  <div *ngIf="!loading && cart && cart.items?.length; else emptyCart" class="space-y-6">
-    <div *ngFor="let item of cart.items" class="flex flex-col sm:flex-row items-center justify-between bg-white border border-gray-100 rounded-lg p-4 shadow-sm hover:shadow-md transition">
+  <!-- Empty Cart -->
+  <ng-container *ngIf="!loading && (!cart || cart.items?.length === 0)">
+    <div class="text-center py-32">
+      <p class="text-2xl font-medium text-gray-700 mb-2">Your cart is empty</p>
+      <p class="text-gray-500 mb-6">Add some beautiful jewellery to your cart to get started.</p>
+      <a routerLink="/products" class="inline-block px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition cursor-pointer">
+        Browse Products
+      </a>
+    </div>
+  </ng-container>
+
+  <!-- Cart Items -->
+  <div *ngIf="!loading && cart?.items?.length" class="space-y-6">
+
+    <div *ngFor="let item of (cart?.items || [])" class="flex flex-col md:flex-row items-start md:items-center justify-between bg-white border border-gray-200 rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition">
       
       <!-- Product Image -->
-      <div class="flex-shrink-0 w-24 h-24 sm:w-28 sm:h-28 overflow-hidden rounded-lg bg-gray-100">
+      <div class="flex-shrink-0 w-28 h-28 md:w-32 md:h-32 overflow-hidden rounded-lg bg-gray-50 border">
         <img [src]="item.image" [alt]="item.productName" class="w-full h-full object-cover" />
       </div>
 
       <!-- Product Info -->
-      <div class="flex-1 min-w-0 mt-3 sm:mt-0 sm:ml-4">
-        <div class="text-lg font-medium text-gray-900 truncate">{{ item.productName }}</div>
-        <div class="text-sm text-gray-600 mt-1">Price: ₹{{ item.price }}</div>
-        <div class="text-sm text-gray-600 mt-1">Subtotal: ₹{{ item.price * item.quantity }}</div>
-      </div>
+      <div class="flex-1 mt-4 md:mt-0 md:ml-6 flex flex-col justify-between">
+        <div>
+          <div class="text-lg font-medium text-gray-900 truncate">{{ item.productName }}</div>
+          <div class="text-gray-600 mt-1 text-sm">Price: <span class="font-semibold">₹{{ item.price }}</span></div>
+          <div class="text-gray-600 mt-1 text-sm">Subtotal: <span class="font-semibold">₹{{ item.subtotal }}</span></div>
+        </div>
 
-      <!-- Controls -->
-      <div class="flex items-center gap-4 mt-3 sm:mt-0">
-        <select 
-          class="border rounded px-2 py-1 text-gray-700"
-          [disabled]="updating.has(item.productId)"
-          [ngModel]="item.quantity"
-          (ngModelChange)="updateQuantity(item, $event)">
-          <option *ngFor="let q of quantityOptions()" [value]="q">{{ q }}</option>
-        </select>
+        <!-- Controls -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-4 md:mt-2">
+          
+          <!-- Quantity Dropdown -->
+          <div class="flex justify-between items-center gap-2">
+            <label for="qty-{{ item.productId }}" class="text-sm text-gray-600 mb-1">Qty</label>
+            <select
+              id="qty-{{ item.productId }}"
+              class="border border-gray-300 rounded-md px-3 py-1 text-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-300"
+              [disabled]="updating.has(item.productId)"
+              [ngModel]="item.quantity"
+              (ngModelChange)="updateQuantity(item, $event)"
+            >
+              <option *ngFor="let q of quantityOptions()" [value]="q">{{ q }}</option>
+            </select>
+          </div>
 
-        <button
-          (click)="removeItem(item.productId)"
-          [disabled]="updating.has(item.productId)"
-          class="text-sm text-red-600 hover:text-red-800 px-3 py-1 rounded">
-          Remove
-        </button>
+          <!-- Remove Button -->
+          <button
+            (click)="removeItem(item.productId)"
+            [disabled]="updating.has(item.productId)"
+            class="px-4 py-1 text-red-600 border border-red-300 rounded-md hover:bg-red-50 hover:text-red-800 transition text-sm mt-2 sm:mt-0"
+          >
+            Remove
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Cart summary -->
-    <div class="flex justify-end mt-6">
-      <div class="w-full sm:w-80 bg-gray-50 border border-gray-100 rounded-lg p-5 shadow-sm">
-        <div class="flex justify-between items-center mb-3">
-          <div class="text-sm text-gray-600">Subtotal</div>
-          <div class="text-lg font-semibold text-gray-900">₹{{ cart.total }}</div>
+    <!-- Cart Summary -->
+    <div class="flex flex-col md:flex-row justify-end mt-8 gap-6">
+      <div class="w-full md:w-96 bg-gray-50 border border-gray-200 rounded-xl p-6 shadow-sm">
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-gray-600 font-medium">Subtotal</span>
+          <span class="text-xl font-semibold text-gray-900">₹{{ cart?.total }}</span>
         </div>
-        <button class="w-full mt-2 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
+        <button class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
           Proceed to Checkout
         </button>
       </div>
     </div>
-  </div>
 
-  <!-- empty cart -->
-  <ng-template #emptyCart>
-    <div class="text-center py-20">
-      <p class="text-lg text-gray-600">Your cart is empty — add some beautiful jewellery!</p>
-    </div>
-  </ng-template>
+  </div>
 </div>

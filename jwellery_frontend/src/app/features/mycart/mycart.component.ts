@@ -3,11 +3,12 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CartserviceService, CartDTO, CartItemDTO } from '../../core/services/cartservice.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-mycart',
   templateUrl: './mycart.component.html',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   styleUrls: ['./mycart.component.scss']
 })
 export class MycartComponent implements OnInit {
@@ -16,13 +17,8 @@ export class MycartComponent implements OnInit {
   cart: CartDTO | null = null;
   loading = false;
 
-  // track productIds currently updating (prevents double API calls)
   updating = new Set<number>();
-
-  // TODO: replace with actual logged-in user id
   userId = 1;
-
-  // Max quantity selectable
   maxQty = 10;
 
   ngOnInit(): void {
@@ -34,27 +30,23 @@ export class MycartComponent implements OnInit {
     this.cartService.getCart(this.userId).subscribe({
       next: (res) => { 
         this.cart = res;
-
-        // compute subtotal for each item locally
         if (this.cart) {
           this.cart.items.forEach(it => it.subtotal = it.price * it.quantity);
           this.cart.total = this.cart.items.reduce((s, it) => s + it.subtotal, 0);
         }
-
         this.loading = false;
       },
-      error: (err) => { console.error('Load cart error', err); this.loading = false; }
+      error: (err) => { 
+        console.error('Load cart error', err); 
+        this.loading = false; 
+      }
     });
   }
 
-  /**
-   * Called when quantity is changed via dropdown
-   */
   updateQuantity(item: CartItemDTO, newQty: number): void {
     const pid = item.productId;
     if (this.updating.has(pid)) return;
 
-    // optimistic update locally
     const oldQty = item.quantity;
     item.quantity = newQty;
     item.subtotal = newQty * item.price;
@@ -68,7 +60,6 @@ export class MycartComponent implements OnInit {
       },
       error: (err) => {
         console.error('Quantity update error', err);
-        // rollback on failure
         item.quantity = oldQty;
         item.subtotal = oldQty * item.price;
         if (this.cart) this.cart.total = this.cart.items.reduce((s, it) => s + it.subtotal, 0);
@@ -97,7 +88,6 @@ export class MycartComponent implements OnInit {
     });
   }
 
-  // helper: returns array [1,2,...,maxQty] for dropdown
   quantityOptions(): number[] {
     return Array.from({ length: this.maxQty }, (_, i) => i + 1);
   }

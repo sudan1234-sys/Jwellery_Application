@@ -11,7 +11,7 @@
     @if (product()) {
       <div class="flex flex-col sm:flex-row items-center gap-4 mb-8">
         <img
-          [src]="product()?.imageUrls || 'https://via.placeholder.com/150'"
+          [src]="product()?.imageUrls?.[0] || 'https://via.placeholder.com/150'"
           alt="{{ product()?.name }}"
           class="w-24 h-24 rounded-lg object-cover border border-gray-200 bg-gray-100"
         />
@@ -29,12 +29,10 @@
     <!-- Review Form -->
     <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()" class="space-y-6">
       <!-- Star Rating -->
-      <!-- <div class="flex flex-col items-center">
-        <label class="block text-gray-700 font-medium mb-2">
-          Your Rating
-        </label>
+      <div class="flex flex-col items-center">
+        <label class="block text-gray-700 font-medium mb-2">Your Rating</label>
         <div class="flex gap-2">
-          @for (let i of [1,2,3,4,5]) {
+          <ng-container *ngFor="let i of [1,2,3,4,5]">
             <button
               type="button"
               (click)="setRating(i)"
@@ -44,16 +42,13 @@
             >
               ★
             </button>
-          }
+          </ng-container>
         </div>
-      </div> -->
+      </div>
 
       <!-- Review Text -->
       <div>
-        <label
-          for="review"
-          class="block text-gray-700 font-medium mb-2"
-        >
+        <label for="review" class="block text-gray-700 font-medium mb-2">
           Write Your Review
         </label>
         <textarea
