@@ -3,7 +3,7 @@ package com.example.jwellery.Mapper;
 import com.example.jwellery.Dto.ProductDTO;
 import com.example.jwellery.Entity.Category;
 import com.example.jwellery.Entity.Product;
-import com.example.jwellery.Entity.Product_Image;
+import com.example.jwellery.Entity.ProductImage;
 import com.example.jwellery.Repositories.CategoryRepository;
 import com.example.jwellery.Repositories.ProductImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +59,7 @@ public class ProductMapper {
                 product.getCategory().getName(),
                 productImageRepository.findByProductId(product.getId())
                         .stream()
-                        .map(Product_Image::getImageUrl)
+                        .map(ProductImage::getImageUrl)
                         .toList()
         );
     }

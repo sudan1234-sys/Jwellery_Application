@@ -1,7 +1,7 @@
 package com.example.jwellery.Services;
 import com.example.jwellery.Entity.Category;
 import com.example.jwellery.Entity.Product;
-import com.example.jwellery.Entity.Product_Image;
+import com.example.jwellery.Entity.ProductImage;
 import com.example.jwellery.Mapper.ProductMapper;
 import com.example.jwellery.Repositories.CategoryRepository;
 import com.example.jwellery.Repositories.ProductImageRepository;
@@ -30,7 +30,7 @@ public class ProductService {
     public void addProduct(Product product) {
         // Ensure bidirectional consistency
         if (product.getImages() != null) {
-            for (Product_Image image : product.getImages()) {
+            for (ProductImage image : product.getImages()) {
                 image.setProduct(product);
             }
         }
@@ -58,7 +58,7 @@ public class ProductService {
                         : productImageRepository.findAllByProduct_IdIn(productIds).stream()
                         .collect(Collectors.groupingBy(
                                 img -> img.getProduct().getId(),
-                                Collectors.mapping(Product_Image::getImageUrl, Collectors.toList())
+                                Collectors.mapping(ProductImage::getImageUrl, Collectors.toList())
                         ));
 
         // 4) Convert each Product -> ProductDTO
@@ -95,7 +95,7 @@ public class ProductService {
                 product.getStock(),
                 product.getCategory().getName(),
                 productImageRepository.findByProductId(id).stream()
-                        .map(Product_Image::getImageUrl) // assuming field is `image` or `url`
+                        .map(ProductImage::getImageUrl) // assuming field is `image` or `url`
                         .toList()
         );
 
@@ -129,7 +129,7 @@ public class ProductService {
 
         if (dto.getImageUrls() != null && !dto.getImageUrls().isEmpty()) {
             for (String url : dto.getImageUrls()) {
-                Product_Image img = new Product_Image();
+                ProductImage img = new ProductImage();
                 img.setImageUrl(url);        // or setImage() depending on your field name
                 img.setProduct(existing);    // link child -> parent
                 productImageRepository.save(img);
@@ -171,7 +171,7 @@ public class ProductService {
                 .stream()
                 .collect(Collectors.groupingBy(
                         img -> img.getProduct().getId(),
-                        Collectors.mapping(Product_Image::getImageUrl, Collectors.toList())
+                        Collectors.mapping(ProductImage::getImageUrl, Collectors.toList())
                 ));
 
         // Map Product entities → ProductDTOs

@@ -2,7 +2,7 @@ package com.example.jwellery.Data;
 
 import com.example.jwellery.Entity.Category;
 import com.example.jwellery.Entity.Product;
-import com.example.jwellery.Entity.Product_Image;
+import com.example.jwellery.Entity.ProductImage;
 import com.example.jwellery.Repositories.CategoryRepository;
 import com.example.jwellery.Repositories.ProductRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -97,7 +97,7 @@ public class DataLoader implements CommandLineRunner {
         product.setFeatured(featured);
 
         for (String url : imageUrls) {
-            Product_Image img = new Product_Image();
+            ProductImage img = new ProductImage();
             img.setImageUrl(url);
             img.setProduct(product);
             product.getImages().add(img);

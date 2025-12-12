@@ -6,13 +6,13 @@ import lombok.*;
 @Data
 
 @Table(name = "Product_Image")
-public class Product_Image {
+public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String imageUrl;
 
-    public Product_Image() {
+    public ProductImage() {
     }
 
     public Long getId() {
