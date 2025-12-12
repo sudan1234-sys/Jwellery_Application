@@ -41,7 +41,7 @@ public class Product {
     // 🔗 One Product → Many Images
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<Product_Image> images = new ArrayList<>();
+    private List<ProductImage> images = new ArrayList<>();
 
     @Column(nullable = false)
     private boolean featured = false;  // default false
@@ -110,11 +110,11 @@ public class Product {
         this.category = category;
     }
 
-    public List<Product_Image> getImages() {
+    public List<ProductImage> getImages() {
         return images;
     }
 
-    public void setImages(List<Product_Image> images) {
+    public void setImages(List<ProductImage> images) {
         this.images = images;
     }
 
@@ -127,7 +127,7 @@ public class Product {
     }
 
     // Helper method to add image safely
-    public void addImage(Product_Image image) {
+    public void addImage(ProductImage image) {
         images.add(image);
         image.setProduct(this); // maintain bidirectional consistency
     }

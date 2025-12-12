@@ -2,7 +2,7 @@ package com.example.jwellery.Controllers;
 import com.example.jwellery.Dto.ProductDTO;
 import com.example.jwellery.Entity.Category;
 import com.example.jwellery.Entity.Product;
-import com.example.jwellery.Entity.Product_Image;
+import com.example.jwellery.Entity.ProductImage;
 import com.example.jwellery.Mapper.ProductMapper;
 import com.example.jwellery.Services.ProductService;
 import jakarta.validation.Valid;
@@ -100,7 +100,7 @@ public class ProductController {
                         product.getStock(),              // long
                         product.getCategory().getName(), // String
                         product.getImages().stream()
-                                .map(Product_Image::getImageUrl)
+                                .map(ProductImage::getImageUrl)
                                 .toList()                  // List<String>
                 ))
                 .toList();
